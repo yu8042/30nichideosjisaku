@@ -7,7 +7,7 @@
 以下の環境で正常に動作しているか確認しています。
 
 - OS
-	- Mac OS X Lion 10.7.4
+	- Mac OS X El Capitan 10.11.2
 - テキストエディタ
 	- Emacs
 	- 書籍で紹介されているTeraPadはMacには無いので自分の慣れたやつ使ってください
@@ -28,12 +28,10 @@
  	1. ダウンロードページ→[http://shrimp.marokun.net/osakkie/wiki/tolsetOSX/](http://shrimp.marokun.net/osakkie/wiki/tolsetOSX/)
  	2. tolsetOSX-070221.dmgという名前のファイルをダウンロードして解凍
  	3. 解凍したデータのうち`z_toolsディレクトリ`を`HariboteOSディレクトリ`にコピー
-4. Q.appをダウンロード
-	1. ダウンロードページ→[http://www.kju-app.org/](http://www.kju-app.org/)
-	2. 「Download - Free」をクリックしてダウンロードして解凍
-		- (現時点でバージョンはQ-0.9.0a89)
-	3. 解凍したデータのうち、`Q.app`を`HariboteOSディレクトリ`にコピー
-		- クセでApplicationsに入れたりしないようにね
+4. qemuをダウンロード
+	1. `brew install qemu`
+	2. `qemu-system-i386 -version` でバージョンを確認
+		- (現時点でバージョンは`2.5.0`)
 
 ## HariboteOSのディレクトリ構造
 
@@ -44,7 +42,6 @@
 		- projects(付属CD-ROMのやつ)
 		- tolset(付属CD-ROMのやつ)
 		- z_tools(tolsetOSXのやつ)
-		- Q.app
 
 
 # 2. シェルスクリプト実行

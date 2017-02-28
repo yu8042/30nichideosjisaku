@@ -32,8 +32,8 @@ find . -maxdepth 1 -regex ".*_day" -type d | xargs -J % cp -rp % ../
 cd ../
 
 # set Makefile
-curl -L https://github.com/sandai/30nichideosjisaku/tarball/master | tar xz -C ./
-readonly SANDAI=$(find . -maxdepth 1 -regex ".*sandai-30nichideosjisaku.*" -type d)
+curl -L https://github.com/tatsumack/30nichideosjisaku/tarball/master | tar xz -C ./
+readonly SANDAI=$(find . -maxdepth 1 -regex ".*tatsumack-30nichideosjisaku.*" -type d)
 cd $SANDAI
 find . -regex ".*_day" -o -name "z_tools" -maxdepth 1 -type d | xargs -J % cp -rpf % ../
 cd ../

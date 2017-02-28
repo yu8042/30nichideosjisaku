@@ -19,16 +19,12 @@ elif [ ! -d $TOL ]; then
 elif [ ! -d $ZTO ]; then
     echo "~/HariboteOS/以下にz_toolsディレクトリがどこにも無な〜い＞＜"
     exit 1
-elif [ ! -e $HOS/Q.app ]; then
-    echo "~/HariboteOS/以下にQ.appを至急設置するであります＞＜"
-    exit 1
 fi
 
 # set z_tools
 mkdir -p $ZTO/qemu
 cp $TOL/z_tools/qemu/bios.bin $ZTO/qemu/bios.bin
 cp $TOL/z_tools/qemu/vgabios.bin $ZTO/qemu/vgabios.bin
-mv -f $HOS/Q.app $ZTO/qemu
 
 # set projects
 cd $PRO

@@ -15,7 +15,7 @@
 
 1. `HariboteOS`という名前のディレクトリをホームディレクトリに作成
  	- `mkdir ~/HariboteOS`
-2. サポートページ( https://book.mynavi.jp/supportsite/detail/4839919844.html )からCDイメージをダウンロードし、`projectsディレクトリ`と`tolsetディレクトリ`をさっき作成した`HariboteOSディレクトリ`にコピー
+2. [サポートサイト](https://book.mynavi.jp/supportsite/detail/4839919844.html)からCDイメージをダウンロードし、`projectsディレクトリ`と`tolsetディレクトリ`をさっき作成した`HariboteOSディレクトリ`にコピー
 3. tolsetOSXをダウンロード
  	1. ダウンロードページ→[http://shrimp.marokun.net/osakkie/wiki/tolsetOSX/](http://shrimp.marokun.net/osakkie/wiki/tolsetOSX/)
  	2. tolsetOSX-070221.dmgという名前のファイルをダウンロードして解凍

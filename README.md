@@ -13,18 +13,25 @@
 
 ### 1. このレポジトリをclone
 
-`git clone git@github.com:tatsumack/30nichideosjisaku.git`
+```bash
+$ git clone git@github.com:tatsumack/30nichideosjisaku.git
+```
 
 ### 2. qemuをインストール
-	1. `brew install qemu`
-	2. `qemu-system-i386 -version` でバージョンを確認
-		- (現時点でバージョンは`3.1.0`)
+
+```bash
+# Homebrewでインストール
+$ brew install qemu
+
+# バージョンを確認 (現時点でバージョンは`3.1.0`)
+$ qemu-system-i386 -version
+```
 
 ### 3. 確認
 
-```
-cd ~/HariboteOS/01_day/helloos0  
-make run
+```bash
+$ cd ~/HariboteOS/01_day/helloos0  
+$ make run
 ```
 
 実行して以下のように表示されていれば成功です。

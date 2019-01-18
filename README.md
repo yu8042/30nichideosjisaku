@@ -30,7 +30,7 @@ $ qemu-system-i386 -version
 ### 3. 確認
 
 ```bash
-$ cd ~/HariboteOS/01_day/helloos0  
+$ cd 01_day/helloos0
 $ make run
 ```
 

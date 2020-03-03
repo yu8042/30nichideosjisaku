@@ -6,12 +6,11 @@ default :
 
 # ファイル生成規則
 
-ipl.bin : ipl.nas Makefile
-	../../z_tools/nask ipl.nas ipl.bin ipl.lst
+ipl.bin : ipl.asm Makefile
+	nasm ipl.asm -o ipl.bin -l ipl.lst
 
 helloos.img : ipl.bin Makefile
-	../../z_tools/edimg   imgin:../../z_tools/fdimg0at.tek \
-		wbinimg src:ipl.bin len:512 from:0 to:0   imgout:helloos.img
+	mformat -f 1440 -C -B ipl.bin -i helloos.img ::
 
 # コマンド
 
@@ -28,6 +27,8 @@ run :
 
 install :
 	make img
+	# linuxでは動かないが、これでフロッピーディスクにデータを焼いてくれるらしい
+	# linuxでは代わりにddコマンドを使ってusbとかにでも焼いてブータブルディスクを作ることが可能らしい
 	../../z_tools/imgtol w a: helloos.img
 
 clean :

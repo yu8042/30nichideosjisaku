@@ -1,7 +1,7 @@
 TOOLPATH = ../../z_tools/
 MAKE     = make -r
-NASK     = $(TOOLPATH)nask
-EDIMG    = $(TOOLPATH)edimg
+NASM     = nasm
+EDIMG    = mformat
 IMGTOL   = $(TOOLPATH)imgtol
 COPY     = cp
 DEL      = rm -f
@@ -9,16 +9,15 @@ DEL      = rm -f
 # デフォルト動作
 
 default :
-	$(MAKE) img
+	$(MAKM) img
 
 # ファイル生成規則
 
-ipl.bin : ipl.nas Makefile
-	$(NASK) ipl.nas ipl.bin ipl.lst
+ipl.bin : ipl.asm Makefile
+	$(NASM) ipl.asm -o ipl.bin -l ipl.lst
 
 haribote.img : ipl.bin Makefile
-	$(EDIMG)   imgin:../../z_tools/fdimg0at.tek \
-		wbinimg src:ipl.bin len:512 from:0 to:0   imgout:haribote.img
+	$(EDIMG) -f 1440 -C -B ipl.bin -i haribote.img ::
 
 # コマンド
 

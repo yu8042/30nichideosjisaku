@@ -24,7 +24,7 @@
 		DD		0xffffffff		; たぶんボリュームシリアル番号
 		DB		"HARIBOTEOS "	; ディスクの名前（11バイト）
 		DB		"FAT12   "		; フォーマットの名前（8バイト）
-		RESB	18				; とりあえず18バイトあけておく
+		TIMES	18	DB	0		; とりあえず18バイトあけておく
 
 ; プログラム本体
 
@@ -49,10 +49,10 @@ retry:
 		MOV		BX,0
 		MOV		DL,0x00			; Aドライブ
 		INT		0x13			; ディスクBIOS呼び出し
-		JNC		next			; エラーがおきなければnextへ
+		JNC		next			; エラーがおきなければnextへ jump if not carry
 		ADD		SI,1			; SIに1を足す
 		CMP		SI,5			; SIと5を比較
-		JAE		error			; SI >= 5 だったらerrorへ
+		JAE		error			; SI >= 5 だったらerrorへ jump if above or equal
 		MOV		AH,0x00
 		MOV		DL,0x00			; Aドライブ
 		INT		0x13			; ドライブのリセット
@@ -63,7 +63,7 @@ next:
 		MOV		ES,AX			; ADD ES,0x020 という命令がないのでこうしている
 		ADD		CL,1			; CLに1を足す
 		CMP		CL,18			; CLと18を比較
-		JBE		readloop		; CL <= 18 だったらreadloopへ
+		JBE		readloop		; CL <= 18 だったらreadloopへ jump if below or equal
 
 ; 読み終わったけどとりあえずやることないので寝る
 
@@ -88,6 +88,6 @@ msg:
 		DB		0x0a			; 改行
 		DB		0
 
-		RESB	0x7dfe-$		; 0x7dfeまでを0x00で埋める命令
+		TIMES	0x7dfe-0x7c00-($-$$)	DB	0	; 0x7dfeまでを0x00で埋める命令
 
 		DB		0x55, 0xaa

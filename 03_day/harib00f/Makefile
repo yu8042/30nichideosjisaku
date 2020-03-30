@@ -1,7 +1,7 @@
 TOOLPATH = ../../z_tools/
 MAKE     = make -r
-NASK     = $(TOOLPATH)nask
-EDIMG    = $(TOOLPATH)edimg
+NASM     = nasm
+EDIMG    = mformat
 IMGTOL   = $(TOOLPATH)imgtol
 COPY     = cp
 DEL      = rm -f
@@ -13,17 +13,15 @@ default :
 
 # ファイル生成規則
 
-ipl.bin : ipl.nas Makefile
-	$(NASK) ipl.nas ipl.bin ipl.lst
+ipl.bin : ipl.asm Makefile
+	$(NASM) ipl.asm -o ipl.bin -l ipl.lst
 
-haribote.sys : haribote.nas Makefile
-	$(NASK) haribote.nas haribote.sys haribote.lst
+haribote.sys : haribote.asm Makefile
+	$(NASM) haribote.asm -o haribote.sys -l haribote.lst
 
 haribote.img : ipl.bin haribote.sys Makefile
-	$(EDIMG)   imgin:../../z_tools/fdimg0at.tek \
-		wbinimg src:ipl.bin len:512 from:0 to:0 \
-		copy from:haribote.sys to:@: \
-		imgout:haribote.img
+	mformat -f 1440 -C -B ipl.bin -i haribote.img ::
+	mcopy -i haribote.img haribote.sys ::
 
 # コマンド
 

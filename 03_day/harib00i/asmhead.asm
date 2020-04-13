@@ -140,5 +140,5 @@ GDTR0:
 		DW		8*3-1
 		DD		GDT0
 
-		ALIGNB	16
+		ALIGN	16,	DB	0
 bootpack:

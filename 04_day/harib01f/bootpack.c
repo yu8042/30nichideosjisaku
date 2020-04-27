@@ -6,14 +6,13 @@ void io_store_eflags(int eflags);
 
 /* 実は同じソースファイルに書いてあっても、定義する前に使うのなら、
 	やっぱり宣言しておかないといけない。 */
-
 void init_palette(void);
 void set_palette(int start, int end, unsigned char *rgb);
 
 void HariMain(void)
 {
 	int i; /* 変数宣言。iという変数は、32ビットの整数型 */
-	char *p; /* pという変数は、BYTE [...]用の番地 */
+	char *p; /* pという変数は、BYTE [...]用の番地 何でcharなのか不思議に思ったらp76に戻って復習しよう*/
 
 	init_palette(); /* パレットを設定 */
 

@@ -27,7 +27,7 @@ void boxfill8(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, i
 
 void HariMain(void)
 {
-	char *vram;
+        char *vram;
 	int xsize, ysize;
 
 	init_palette();

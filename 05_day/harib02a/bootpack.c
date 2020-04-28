@@ -28,7 +28,7 @@ void init_screen(char *vram, int x, int y);
 
 void HariMain(void)
 {
-	char *vram;
+        char *vram;
 	int xsize, ysize;
 	short *binfo_scrnx, *binfo_scrny;
 	int *binfo_vram;

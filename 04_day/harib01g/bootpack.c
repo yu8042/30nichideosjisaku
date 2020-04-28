@@ -27,7 +27,7 @@ void boxfill8(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, i
 
 void HariMain(void)
 {
-	char *p; /* pという変数は、BYTE [...]用の番地 */
+	char *p; /* pという変数は、BYTE [...]用の番地 何でcharなのか不思議に思ったらp76に戻って復習しよう*/
 
 	init_palette(); /* パレットを設定 */
 

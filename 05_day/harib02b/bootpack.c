@@ -34,7 +34,7 @@ struct BOOTINFO {
 
 void HariMain(void)
 {
-	char *vram;
+        char *vram;
 	int xsize, ysize;
 	struct BOOTINFO *binfo;
 

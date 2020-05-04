@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 void io_hlt(void);
 void io_cli(void);
 void io_out8(int port, int data);

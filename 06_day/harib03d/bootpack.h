@@ -82,3 +82,6 @@ void init_pic(void);
 #define PIC1_ICW2		0x00a1
 #define PIC1_ICW3		0x00a1
 #define PIC1_ICW4		0x00a1
+
+/* mysprintf.c */
+void sprintf (char *str, char *fmt, ...);

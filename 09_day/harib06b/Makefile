@@ -33,7 +33,7 @@ hankaku.c : hankaku.txt convertHankakuTxt
 	i386-elf-gcc -c -march=i486 -m32 -nostdlib $*.c -o $@
 
 bootpack.hrb : bootpack.c hankaku.obj graphic.obj dsctbl.obj nasmfunc.obj mysprintf.obj int.obj fifo.obj mouse.obj keyboard.obj har.ld Makefile
-	i386-elf-gcc -march=i486 -m32 -nostdlib -T har.ld -g nasmfunc.obj mysprintf.obj int.obj fifo.obj graphic.obj dsctbl.obj hankaku.obj mouse.obj keyboard.obj bootpack.c -o bootpack.hrb
+	i386-elf-gcc -O1 -march=i486 -m32 -nostdlib -T har.ld -g nasmfunc.obj mysprintf.obj int.obj fifo.obj graphic.obj dsctbl.obj hankaku.obj mouse.obj keyboard.obj bootpack.c -o bootpack.hrb
 
 haribote.sys : asmhead.bin bootpack.hrb Makefile
 	cat asmhead.bin bootpack.hrb > haribote.sys

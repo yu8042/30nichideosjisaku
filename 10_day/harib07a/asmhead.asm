@@ -55,8 +55,6 @@ VRAM	EQU		0x0ff8			; ƒOƒ‰ƒtƒBƒbƒNƒoƒbƒtƒ@‚ÌŠJŽn”Ô’n
 
 ; ƒvƒƒeƒNƒgƒ‚[ƒhˆÚs
 
-[INSTRSET "i486p"]				; 486‚Ì–½—ß‚Ü‚ÅŽg‚¢‚½‚¢‚Æ‚¢‚¤‹Lq
-
 		LGDT	[GDTR0]			; Žb’èGDT‚ðÝ’è
 		MOV		EAX,CR0
 		AND		EAX,0x7fffffff	; bit31‚ð0‚É‚·‚éiƒy[ƒWƒ“ƒO‹ÖŽ~‚Ì‚½‚ßj
@@ -131,16 +129,16 @@ memcpy:
 		RET
 ; memcpy‚ÍƒAƒhƒŒƒXƒTƒCƒYƒvƒŠƒtƒBƒNƒX‚ð“ü‚ê–Y‚ê‚È‚¯‚ê‚ÎAƒXƒgƒŠƒ“ƒO–½—ß‚Å‚à‘‚¯‚é
 
-		ALIGNB	16
+		ALIGN	16,	DB	0
 GDT0:
-		RESB	8				; ƒkƒ‹ƒZƒŒƒNƒ^
+		TIMES	8	DB	0		; ƒkƒ‹ƒZƒŒƒNƒ^
 		DW		0xffff,0x0000,0x9200,0x00cf	; “Ç‚Ý‘‚«‰Â”\ƒZƒOƒƒ“ƒg32bit
 		DW		0xffff,0x0000,0x9a28,0x0047	; ŽÀs‰Â”\ƒZƒOƒƒ“ƒg32bitibootpack—pj
 
 		DW		0
 GDTR0:
-		DW		8*3-1
+		DW		8*3-1 ; p123â€žÃ…Â´ÃŠÃµâˆâ€žÃ…Ã‘â€žÃ…Â¶â€žÃ…Ã‡â€žÃ‡Ã£ÃˆÃ„Ã¶â€žÃ‡Ã¤GDTRâ€žÃ…Ã†ÃŠÃºÃ„Ã‚Ã Ã¹â€žÃ…Ã†Ã”ÂºÃ­â€žÃ‰Ãªâ€žÃ‡Â§â€žÃ‰Ã â€žÃ…Ã˜â€žÃ‰â„¢â€žÃ‰Ã¼â€žÃ‰Ã‰â€žÃ‰Ã â€žÃ‡Ã­Ã‹Â°Â®â€žÃ…Ã´â€žÃ‡Ã â€žÃ…â‰ â€žÃ„Ã…â€žÃ…Ã‡â€žÃ‡Ã¥â€žÃ…Ã†â€žÃ…Ã¬â€žÃ…Â®â€žÃ„Ã‡
 		DD		GDT0
 
-		ALIGNB	16
+		ALIGN	16,	DB	0
 bootpack:

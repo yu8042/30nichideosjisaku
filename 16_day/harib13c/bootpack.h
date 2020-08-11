@@ -1,15 +1,15 @@
-/* asmhead.nas */
+/* asmhead.asm */
 struct BOOTINFO { /* 0x0ff0-0x0fff */
-	char cyls; /* ƒu[ƒgƒZƒNƒ^‚Í‚Ç‚±‚Ü‚ÅƒfƒBƒXƒN‚ğ“Ç‚ñ‚¾‚Ì‚© */
-	char leds; /* ƒu[ƒg‚ÌƒL[ƒ{[ƒh‚ÌLED‚Ìó‘Ô */
-	char vmode; /* ƒrƒfƒIƒ‚[ƒh  ‰½ƒrƒbƒgƒJƒ‰[‚© */
+	char cyls; /* ãƒ–ãƒ¼ãƒˆã‚»ã‚¯ã‚¿ã¯ã©ã“ã¾ã§ãƒ‡ã‚£ã‚¹ã‚¯ã‚’èª­ã‚“ã ã®ã‹ */
+	char leds; /* ãƒ–ãƒ¼ãƒˆæ™‚ã®ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®LEDã®çŠ¶æ…‹ */
+	char vmode; /* ãƒ“ãƒ‡ã‚ªãƒ¢ãƒ¼ãƒ‰  ä½•ãƒ“ãƒƒãƒˆã‚«ãƒ©ãƒ¼ã‹ */
 	char reserve;
-	short scrnx, scrny; /* ‰æ–Ê‰ğ‘œ“x */
+	short scrnx, scrny; /* ç”»é¢è§£åƒåº¦ */
 	char *vram;
 };
 #define ADR_BOOTINFO	0x00000ff0
 
-/* naskfunc.nas */
+/* nasmfunc.asm */
 void io_hlt(void);
 void io_cli(void);
 void io_sti(void);
@@ -126,12 +126,12 @@ void enable_mouse(struct FIFO32 *fifo, int data0, struct MOUSE_DEC *mdec);
 int mouse_decode(struct MOUSE_DEC *mdec, unsigned char dat);
 
 /* memory.c */
-#define MEMMAN_FREES		4090	/* ‚±‚ê‚Å–ñ32KB */
+#define MEMMAN_FREES		4090	/* â€Ã…Ã¬â€Ã‡Ã¥â€Ã…ÃŸÃÂ¥Ã‘32KB */
 #define MEMMAN_ADDR			0x003c0000
-struct FREEINFO {	/* ‚ ‚«î•ñ */
+struct FREEINFO {	/* â€Ã…Ã‡â€Ã…Ã§ÃŠÃ‰Ã–Ã‚â€ Â± */
 	unsigned int addr, size;
 };
-struct MEMMAN {		/* ƒƒ‚ƒŠŠÇ— */
+struct MEMMAN {		/* â€Ã‰Â°â€Ã‰Â¢â€Ã‰â„¢ÃÃ†Â°ÃÃªÃœ */
 	int frees, maxfrees, lostsize, losts;
 	struct FREEINFO free[MEMMAN_FREES];
 };
@@ -186,8 +186,8 @@ void timer_settime(struct TIMER *timer, unsigned int timeout);
 void inthandler20(int *esp);
 
 /* mtask.c */
-#define MAX_TASKS		1000	/* Å‘åƒ^ƒXƒN” */
-#define TASK_GDT0		3		/* TSS‚ğGDT‚Ì‰½”Ô‚©‚çŠ„‚è“–‚Ä‚é‚Ì‚© */
+#define MAX_TASKS	1000	/* æœ€å¤§ã‚¿ã‚¹ã‚¯æ•° */
+#define TASK_GDT0	3	/* TSSã‚’GDTã®ä½•ç•ªç›®ã‹ã‚‰å‰²ã‚Šå½“ã¦ã‚‹ã®ã‹ */
 struct TSS32 {
 	int backlink, esp0, ss0, esp1, ss1, esp2, ss2, cr3;
 	int eip, eflags, eax, ecx, edx, ebx, esp, ebp, esi, edi;
@@ -195,12 +195,12 @@ struct TSS32 {
 	int ldtr, iomap;
 };
 struct TASK {
-	int sel, flags; /* sel‚ÍGDT‚Ì”Ô†‚Ì‚±‚Æ */
+	int sel, flags; /* selã¯selectorã®ç•¥ã§GDTã®ç•ªå·ã®ã“ã¨ */
 	struct TSS32 tss;
 };
 struct TASKCTL {
-	int running; /* “®ì‚µ‚Ä‚¢‚éƒ^ƒXƒN‚Ì” */
-	int now; /* Œ»İ“®ì‚µ‚Ä‚¢‚éƒ^ƒXƒN‚ª‚Ç‚ê‚¾‚©•ª‚©‚é‚æ‚¤‚É‚·‚é‚½‚ß‚Ì•Ï” */
+	int running;	/* å‹•ä½œã—ã¦ã„ã‚‹ã‚¿ã‚¹ã‚¯ã®æ•° */
+	int now;	/* ç¾åœ¨å‹•ä½œã—ã¦ã„ã‚‹ã‚¿ã‚¹ã‚¯ãŒã©ã‚Œã ã‹åˆ†ã‹ã‚‹ã‚ˆã†ã«ã™ã‚‹ãŸã‚ã®å¤‰æ•° */
 	struct TASK *tasks[MAX_TASKS];
 	struct TASK tasks0[MAX_TASKS];
 };
@@ -210,3 +210,6 @@ struct TASK *task_alloc(void);
 void task_run(struct TASK *task);
 void task_switch(void);
 void task_sleep(struct TASK *task);
+
+/* mysprintf.c */
+void sprintf (char *str, char *fmt, ...);

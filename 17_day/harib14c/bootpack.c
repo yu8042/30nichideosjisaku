@@ -1,7 +1,4 @@
-/* bootpack‚ÌƒƒCƒ“ */
-
 #include "bootpack.h"
-#include <stdio.h>
 
 void make_window8(unsigned char *buf, int xsize, int ysize, char *title, char act);
 void putfonts8_asc_sht(struct SHEET *sht, int x, int y, int c, int b, char *s, int l);
@@ -36,17 +33,17 @@ void HariMain(void)
 
 	init_gdtidt();
 	init_pic();
-	io_sti(); /* IDT/PIC‚Ì‰Šú‰»‚ªI‚í‚Á‚½‚Ì‚ÅCPU‚ÌŠ„‚è‚İ‹Ö~‚ğ‰ğœ */
+	io_sti(); /* IDT/PICã®åˆæœŸåŒ–ãŒçµ‚ã‚ã£ãŸã®ã§CPUã®å‰²ã‚Šè¾¼ã¿ç¦æ­¢ã‚’è§£é™¤ */
 	fifo32_init(&fifo, 128, fifobuf, 0);
 	init_pit();
 	init_keyboard(&fifo, 256);
 	enable_mouse(&fifo, 512, &mdec);
-	io_out8(PIC0_IMR, 0xf8); /* PIT‚ÆPIC1‚ÆƒL[ƒ{[ƒh‚ğ‹–‰Â(11111000) */
-	io_out8(PIC1_IMR, 0xef); /* ƒ}ƒEƒX‚ğ‹–‰Â(11101111) */
+    io_out8(PIC0_IMR, 0xf8); /* PITã¨PIC1ã¨ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã‚’è¨±å¯(11111000) */
+    io_out8(PIC1_IMR, 0xef); /* ãƒã‚¦ã‚¹ã‚’è¨±å¯(11101111) */
 
 	memtotal = memtest(0x00400000, 0xbfffffff);
 	memman_init(memman);
-	memman_free(memman, 0x00001000, 0x0009e000); /* 0x00001000 - 0x0009efff */
+	memman_free(memman, 0x00001000, 0x0009e000); /* 0x00001000 ã‹ã‚‰ 0x0009efff ã¾ã§ */
 	memman_free(memman, 0x00400000, memtotal - 0x00400000);
 
 	init_palette();
@@ -58,13 +55,13 @@ void HariMain(void)
 	/* sht_back */
 	sht_back  = sheet_alloc(shtctl);
 	buf_back  = (unsigned char *) memman_alloc_4k(memman, binfo->scrnx * binfo->scrny);
-	sheet_setbuf(sht_back, buf_back, binfo->scrnx, binfo->scrny, -1); /* “§–¾F‚È‚µ */
+	sheet_setbuf(sht_back, buf_back, binfo->scrnx, binfo->scrny, -1); /* é€æ˜è‰²ãªã— */
 	init_screen8(buf_back, binfo->scrnx, binfo->scrny);
 
 	/* sht_cons */
 	sht_cons = sheet_alloc(shtctl);
 	buf_cons = (unsigned char *) memman_alloc_4k(memman, 256 * 165);
-	sheet_setbuf(sht_cons, buf_cons, 256, 165, -1); /* “§–¾F‚È‚µ */
+	sheet_setbuf(sht_cons, buf_cons, 256, 165, -1); /* é€æ˜è‰²ãªã— */
 	make_window8(buf_cons, 256, 165, "console", 0);
 	make_textbox8(sht_cons, 8, 28, 240, 128, COL8_000000);
 	task_cons = task_alloc();
@@ -82,7 +79,7 @@ void HariMain(void)
 	/* sht_win */
 	sht_win   = sheet_alloc(shtctl);
 	buf_win   = (unsigned char *) memman_alloc_4k(memman, 160 * 52);
-	sheet_setbuf(sht_win, buf_win, 144, 52, -1); /* “§–¾F‚È‚µ */
+	sheet_setbuf(sht_win, buf_win, 144, 52, -1); /* é€æ˜è‰²ãªã— */
 	make_window8(buf_win, 144, 52, "task_a", 1);
 	make_textbox8(sht_win, 8, 28, 128, 16, COL8_FFFFFF);
 	cursor_x = 8;
@@ -95,7 +92,7 @@ void HariMain(void)
 	sht_mouse = sheet_alloc(shtctl);
 	sheet_setbuf(sht_mouse, buf_mouse, 16, 16, 99);
 	init_mouse_cursor8(buf_mouse, 99);
-	mx = (binfo->scrnx - 16) / 2; /* ‰æ–Ê’†‰›‚É‚È‚é‚æ‚¤‚ÉÀ•WŒvZ */
+	mx = (binfo->scrnx - 16) / 2; /* ç”»é¢ä¸­å¤®ã«ãªã‚‹ã‚ˆã†ã«åº§æ¨™è¨ˆç®— */
 	my = (binfo->scrny - 28 - 16) / 2;
 
 	sheet_slide(sht_back,  0,  0);
@@ -120,20 +117,20 @@ void HariMain(void)
 		} else {
 			i = fifo32_get(&fifo);
 			io_sti();
-			if (256 <= i && i <= 511) { /* ƒL[ƒ{[ƒhƒf[ƒ^ */
-				sprintf(s, "%02X", i - 256);
+			if (256 <= i && i <= 511) { /* ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ãƒ‡ãƒ¼ã‚¿ */
+				sprintf(s, "%x", i - 256);
 				putfonts8_asc_sht(sht_back, 0, 16, COL8_FFFFFF, COL8_008484, s, 2);
 				if (i < 0x54 + 256) {
-					if (keytable[i - 256] != 0 && cursor_x < 128) { /* ’Êí•¶š */
-						/* ˆê•¶š•\¦‚µ‚Ä‚©‚çAƒJ[ƒ\ƒ‹‚ğ1‚Âi‚ß‚é */
+					if (keytable[i - 256] != 0 && cursor_x < 128) { /* é€šå¸¸æ–‡å­— */
+						/* ä¸€æ–‡å­—è¡¨ç¤ºã—ã¦ã‹ã‚‰ã€ã‚«ãƒ¼ã‚½ãƒ«ã‚’1ã¤é€²ã‚ã‚‹ */
 						s[0] = keytable[i - 256];
 						s[1] = 0;
 						putfonts8_asc_sht(sht_win, cursor_x, 28, COL8_000000, COL8_FFFFFF, s, 1);
 						cursor_x += 8;
 					}
 				}
-				if (i == 256 + 0x0e && cursor_x > 8) { /* ƒoƒbƒNƒXƒy[ƒX */
-					/* ƒJ[ƒ\ƒ‹‚ğƒXƒy[ƒX‚ÅÁ‚µ‚Ä‚©‚çAƒJ[ƒ\ƒ‹‚ğ1‚Â–ß‚· */
+				if (i == 256 + 0x0e && cursor_x > 8) { /* ãƒãƒƒã‚¯ã‚¹ãƒšãƒ¼ã‚¹ */
+					/* ã‚«ãƒ¼ã‚½ãƒ«ã‚’ã‚¹ãƒšãƒ¼ã‚¹ã§æ¶ˆã—ã¦ã‹ã‚‰ã€ã‚«ãƒ¼ã‚½ãƒ«ã‚’1ã¤æˆ»ã™ */
 					putfonts8_asc_sht(sht_win, cursor_x, 28, COL8_000000, COL8_FFFFFF, " ", 1);
 					cursor_x -= 8;
 				}
@@ -150,13 +147,13 @@ void HariMain(void)
 					sheet_refresh(sht_win,  0, 0, sht_win->bxsize,  21);
 					sheet_refresh(sht_cons, 0, 0, sht_cons->bxsize, 21);
 				}
-				/* ƒJ[ƒ\ƒ‹‚ÌÄ•\¦ */
+				/* ã‚«ãƒ¼ã‚½ãƒ«ã®å†è¡¨ç¤º */
 				boxfill8(sht_win->buf, sht_win->bxsize, cursor_c, cursor_x, 28, cursor_x + 7, 43);
 				sheet_refresh(sht_win, cursor_x, 28, cursor_x + 8, 44);
-			} else if (512 <= i && i <= 767) { /* ƒ}ƒEƒXƒf[ƒ^ */
+			} else if (512 <= i && i <= 767) { /* ãƒã‚¦ã‚¹ãƒ‡ãƒ¼ã‚¿ */
 				if (mouse_decode(&mdec, i - 512) != 0) {
-					/* ƒf[ƒ^‚ª3ƒoƒCƒg‘µ‚Á‚½‚Ì‚Å•\¦ */
-					sprintf(s, "[lcr %4d %4d]", mdec.x, mdec.y);
+					/* ãƒ‡ãƒ¼ã‚¿ãŒ3ãƒã‚¤ãƒˆæƒã£ãŸã®ã§è¡¨ç¤º */
+					sprintf(s, "[lcr %d %d]", mdec.x, mdec.y);
 					if ((mdec.btn & 0x01) != 0) {
 						s[1] = 'L';
 					}
@@ -167,7 +164,7 @@ void HariMain(void)
 						s[2] = 'C';
 					}
 					putfonts8_asc_sht(sht_back, 32, 16, COL8_FFFFFF, COL8_008484, s, 15);
-					/* ƒ}ƒEƒXƒJ[ƒ\ƒ‹‚ÌˆÚ“® */
+					/* ãƒã‚¦ã‚¹ã‚«ãƒ¼ã‚½ãƒ«ã®ç§»å‹• */
 					mx += mdec.x;
 					my += mdec.y;
 					if (mx < 0) {
@@ -182,20 +179,20 @@ void HariMain(void)
 					if (my > binfo->scrny - 1) {
 						my = binfo->scrny - 1;
 					}
-					sprintf(s, "(%3d, %3d)", mx, my);
+					sprintf(s, "(%d, %d)", mx, my);
 					putfonts8_asc_sht(sht_back, 0, 0, COL8_FFFFFF, COL8_008484, s, 10);
 					sheet_slide(sht_mouse, mx, my);
 					if ((mdec.btn & 0x01) != 0) {
-						/* ¶ƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚Ä‚¢‚½‚çAsht_win‚ğ“®‚©‚· */
+						/* å·¦ãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ã¦ã„ãŸã‚‰ã€sht_winã‚’å‹•ã‹ã™ */
 						sheet_slide(sht_win, mx - 80, my - 8);
 					}
 				}
-			} else if (i <= 1) { /* ƒJ[ƒ\ƒ‹—pƒ^ƒCƒ} */
+			} else if (i <= 1) { /* ã‚«ãƒ¼ã‚½ãƒ«ç”¨ã‚¿ã‚¤ãƒ */
 				if (i != 0) {
-					timer_init(timer, &fifo, 0); /* Ÿ‚Í0‚ğ */
+					timer_init(timer, &fifo, 0); /* æ¬¡ã¯0ã‚’ */
 					cursor_c = COL8_000000;
 				} else {
-					timer_init(timer, &fifo, 1); /* Ÿ‚Í1‚ğ */
+					timer_init(timer, &fifo, 1); /* æ¬¡ã¯1ã‚’ */
 					cursor_c = COL8_FFFFFF;
 				}
 				timer_settime(timer, 50);
@@ -312,12 +309,12 @@ void console_task(struct SHEET *sheet)
 		} else {
 			i = fifo32_get(&fifo);
 			io_sti();
-			if (i <= 1) { /* ƒJ[ƒ\ƒ‹—pƒ^ƒCƒ} */
+			if (i <= 1) { /* ã‚«ãƒ¼ã‚½ãƒ«ç”¨ã‚¿ã‚¤ãƒ */
 				if (i != 0) {
-					timer_init(timer, &fifo, 0); /* Ÿ‚Í0‚ğ */
+					timer_init(timer, &fifo, 0); /* æ¬¡ã¯0ã‚’ */
 					cursor_c = COL8_FFFFFF;
 				} else {
-					timer_init(timer, &fifo, 1); /* Ÿ‚Í1‚ğ */
+					timer_init(timer, &fifo, 1); /* æ¬¡ã¯1ã‚’ */
 					cursor_c = COL8_000000;
 				}
 				timer_settime(timer, 50);

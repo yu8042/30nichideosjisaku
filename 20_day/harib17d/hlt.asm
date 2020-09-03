@@ -1,4 +1,3 @@
-[BITS 32]
 		MOV		AL,'h'
 		CALL    2*8:0xbe8
 		MOV		AL,'e'

@@ -1,4 +1,3 @@
-[BITS 32]
 		MOV		AL,'h'
 		INT		0x40
 		MOV		AL,'e'

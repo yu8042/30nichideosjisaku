@@ -1,3 +1,4 @@
+[BITS 32]
 		MOV		ECX,msg
 putloop:
 		MOV		AL,[CS:ECX]

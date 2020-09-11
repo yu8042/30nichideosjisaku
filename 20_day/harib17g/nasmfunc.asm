@@ -1,6 +1,8 @@
 ; nasmfunc
 ; TAB=4	
 
+[BITS 32]						; 32ビットモード用の機械語を作らせる
+
 section .text
 	GLOBAL	io_hlt, io_cli, io_sti, io_stihlt
 	GLOBAL  io_in8, io_in16, io_in32

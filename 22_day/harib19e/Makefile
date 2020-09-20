@@ -26,6 +26,9 @@ hello.hrb : hello.asm Makefile
 hello2.hrb : hello2.asm Makefile
 	$(NASM) hello2.asm -o hello2.hrb
 
+hello5.bin : hello5.asm Makefile
+	$(NASM) -f elf32 hello5.asm -o hello5.bin
+
 a_nasm.bin : a_nasm.asm Makefile
 	$(NASM) -f elf32 a_nasm.asm -o a_nasm.bin
 
@@ -50,6 +53,9 @@ hello3.hrb : a_nasm.bin hello3.obj api.ld Makefile
 hello4.hrb : a_nasm.bin hello4.obj api.ld Makefile
 	i386-elf-ld -Map hello4.map -o hello4.hrb -T api.ld a_nasm.bin hello4.obj
 
+hello5.hrb : a_nasm.bin hello5.bin api.ld Makefile
+	i386-elf-ld -Map hello5.map -o hello5.hrb -T api.ld a_nasm.bin hello5.bin
+
 bug1.hrb : a_nasm.bin bug1.obj api.ld Makefile
 	i386-elf-ld -o bug1.hrb -T api.ld a_nasm.bin bug1.obj
 
@@ -65,9 +71,9 @@ bootpack.hrb : bootpack.c hankaku.obj graphic.obj dsctbl.obj nasmfunc.obj myspri
 haribote.sys : asmhead.bin bootpack.hrb Makefile
 	cat asmhead.bin bootpack.hrb > haribote.sys
 
-haribote.img : ipl10.bin haribote.sys hello.hrb hello2.hrb a.hrb hello3.hrb bug1.hrb bug2.hrb bug3.hrb hello4.hrb Makefile
+haribote.img : ipl10.bin haribote.sys hello.hrb hello2.hrb a.hrb hello3.hrb bug1.hrb bug2.hrb bug3.hrb hello4.hrb hello5.hrb Makefile
 	mformat -f 1440 -C -B ipl10.bin -i haribote.img ::
-	mcopy -i haribote.img haribote.sys hello.hrb hello2.hrb a.hrb hello3.hrb bug1.hrb bug2.hrb bug3.hrb hello4.hrb ::
+	mcopy -i haribote.img haribote.sys hello.hrb hello2.hrb a.hrb hello3.hrb bug1.hrb bug2.hrb bug3.hrb hello4.hrb hello5.hrb ::
 
 # ƒRƒ}ƒ“ƒh
 

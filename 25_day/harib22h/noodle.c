@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 int api_openwin(char *buf, int xsiz, int ysiz, int col_inv, char *title);
 void api_putstrwin(int win, int x, int y, int col, int len, char *str);
 void api_boxfilwin(int win, int x0, int y0, int x1, int y1, int col);
@@ -21,10 +19,10 @@ void HariMain(void)
 	timer = api_alloctimer();
 	api_inittimer(timer, 128);
 	for (;;) {
-		sprintf(s, "%5d:%02d:%02d", hou, min, sec);
-		api_boxfilwin(win, 28, 27, 115, 41, 7 /* îí */);
-		api_putstrwin(win, 28, 27, 0 /* çï */, 11, s);
-		api_settimer(timer, 100);	/* 1ïbä‘ */
+		sprintf(s, "%d:%d:%d", hou, min, sec);
+		api_boxfilwin(win, 28, 27, 115, 41, 7 /* ÁôΩ */);
+		api_putstrwin(win, 28, 27, 0 /* Èªí */, 11, s);
+		api_settimer(timer, 100);	/* 1ÁßíÈñì */
 		if (api_getkey(1) != 128) {
 			break;
 		}

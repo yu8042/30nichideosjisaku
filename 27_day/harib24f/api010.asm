@@ -1,13 +1,10 @@
-[FORMAT "WCOFF"]
-[INSTRSET "i486p"]
 [BITS 32]
-[FILE "api010.nas"]
 
-		GLOBAL	_api_free
+		GLOBAL	api_free
 
-[SECTION .text]
+SECTION .text
 
-_api_free:			; void api_free(char *addr, int size);
+api_free:			; void api_free(char *addr, int size);
 		PUSH	EBX
 		MOV		EDX,10
 		MOV		EBX,[CS:0x0020]

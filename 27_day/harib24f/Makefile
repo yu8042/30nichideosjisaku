@@ -1,211 +1,106 @@
-OBJS_BOOTPACK = bootpack.obj naskfunc.obj hankaku.obj graphic.obj dsctbl.obj \
-		int.obj fifo.obj keyboard.obj mouse.obj memory.obj sheet.obj timer.obj \
-		mtask.obj window.obj console.obj file.obj
-
-OBJS_API =	api001.obj api002.obj api003.obj api004.obj api005.obj api006.obj \
-			api007.obj api008.obj api009.obj api010.obj api011.obj api012.obj \
-			api013.obj api014.obj api015.obj api016.obj api017.obj api018.obj \
-			api019.obj api020.obj
-
 TOOLPATH = ../../z_tools/
 INCPATH  = ../../z_tools/haribote/
 
 MAKE     = make -r
-NASK     = $(TOOLPATH)nask
-CC1      = $(TOOLPATH)gocc1 -I$(INCPATH) -Os -Wall -quiet
-GAS2NASK = $(TOOLPATH)gas2nask -a
-OBJ2BIM  = $(TOOLPATH)obj2bim
-MAKEFONT = $(TOOLPATH)makefont
-BIN2OBJ  = $(TOOLPATH)bin2obj
-BIM2HRB  = $(TOOLPATH)bim2hrb
-RULEFILE = $(TOOLPATH)haribote/haribote.rul
-EDIMG    = $(TOOLPATH)edimg
+NASM     = nasm
 IMGTOL   = $(TOOLPATH)imgtol
-GOLIB    = $(TOOLPATH)golib00
 COPY     = cp
 DEL      = rm -f
+OBJS_API = api001.bin api002.bin api003.bin api004.bin api005.bin api006.bin api007.bin api008.bin api009.bin api010.bin api011.bin api012.bin api013.bin api014.bin api015.bin api016.bin api017.bin api018.bin api019.bin api020.bin
 
-# ÉfÉtÉHÉãÉgìÆçÏ
+# ÔøΩfÔøΩtÔøΩHÔøΩÔøΩÔøΩgÔøΩÔøΩÔøΩÔøΩ
 
 default :
 	$(MAKE) img
 
-# ÉtÉ@ÉCÉãê∂ê¨ãKë•
+# ÔøΩtÔøΩ@ÔøΩCÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩKÔøΩÔøΩ
 
-ipl10.bin : ipl10.nas Makefile
-	$(NASK) ipl10.nas ipl10.bin ipl10.lst
+ipl10.bin : ipl10.asm Makefile
+	$(NASM) ipl10.asm -o ipl10.bin -l ipl10.lst
 
-asmhead.bin : asmhead.nas Makefile
-	$(NASK) asmhead.nas asmhead.bin asmhead.lst
+asmhead.bin : asmhead.asm Makefile
+	$(NASM) asmhead.asm -o asmhead.bin -l asmhead.lst
 
-hankaku.bin : hankaku.txt Makefile
-	$(MAKEFONT) hankaku.txt hankaku.bin
+hello5.bin : hello5.asm Makefile
+	$(NASM) -f elf32 hello5.asm -o hello5.bin
 
-hankaku.obj : hankaku.bin Makefile
-	$(BIN2OBJ) hankaku.bin hankaku.obj _hankaku
+nasmfunc.obj : nasmfunc.asm Makefile
+	nasm -g -f elf nasmfunc.asm -o nasmfunc.obj
 
-bootpack.bim : $(OBJS_BOOTPACK) Makefile
-	$(OBJ2BIM) @$(RULEFILE) out:bootpack.bim stack:3136k map:bootpack.map \
-		$(OBJS_BOOTPACK)
-# 3MB+64KB=3136KB
+convertHankakuTxt : convertHankakuTxt.c
+	gcc $< -o $@
 
-bootpack.hrb : bootpack.bim Makefile
-	$(BIM2HRB) bootpack.bim bootpack.hrb 0
+hankaku.c : hankaku.txt convertHankakuTxt
+	./convertHankakuTxt
+
+%.bin : %.asm
+	$(NASM) -f elf32 $*.asm -o $@
+
+apilib.a : $(OBJS_API)
+	i386-elf-ar r apilib.a $(OBJS_API)
+
+%.obj : %.c
+	i386-elf-gcc -c -march=i486 -m32 -nostdlib $*.c -o $@
+
+a.hrb : apilib.a a.obj api.ld Makefile
+	i386-elf-ld -o a.hrb -T api.ld a.obj apilib.a
+
+hello3.hrb : apilib.a hello3.obj api.ld Makefile
+	i386-elf-ld -o hello3.hrb -T api.ld hello3.obj apilib.a
+
+hello4.hrb : apilib.a hello4.obj api.ld Makefile
+	i386-elf-ld -Map hello4.map -o hello4.hrb -T api.ld hello4.obj apilib.a
+
+hello5.hrb : apilib.a hello5.bin api.ld Makefile
+	i386-elf-ld -Map hello5.map -o hello5.hrb -T api.ld hello5.bin apilib.a
+
+winhelo.hrb : apilib.a winhelo.obj api.ld Makefile
+	i386-elf-ld -Map winhelo.map -o winhelo.hrb -T api.ld winhelo.obj apilib.a
+
+winhelo2.hrb : apilib.a winhelo2.obj api.ld Makefile
+	i386-elf-ld -Map winhelo2.map -o winhelo2.hrb -T api.ld winhelo2.obj apilib.a
+
+winhelo3.hrb : apilib.a winhelo3.obj api.ld Makefile
+	i386-elf-ld -Map winhelo3.map -o winhelo3.hrb -T api.ld winhelo3.obj apilib.a
+
+star1.hrb : apilib.a star1.obj api.ld Makefile
+	i386-elf-ld -Map star1.map -o star1.hrb -T api.ld star1.obj apilib.a
+
+stars.hrb : apilib.a stars.obj api.ld Makefile
+	i386-elf-ld -Map stars.map -o stars.hrb -T api.ld stars.obj apilib.a
+
+stars2.hrb : apilib.a stars2.obj api.ld Makefile
+	i386-elf-ld -Map stars2.map -o stars2.hrb -T api.ld stars2.obj apilib.a
+
+lines.hrb : apilib.a lines.obj api.ld Makefile
+	i386-elf-ld -Map lines.map -o lines.hrb -T api.ld lines.obj apilib.a
+
+walk.hrb : apilib.a walk.obj api.ld Makefile
+	i386-elf-ld -Map walk.map -o walk.hrb -T api.ld walk.obj apilib.a
+
+noodle.hrb : apilib.a mysprintf.obj noodle.obj api.ld Makefile
+	i386-elf-ld -Map noodle.map -o noodle.hrb -T api.ld mysprintf.obj noodle.obj apilib.a
+
+beepdown.hrb : apilib.a beepdown.obj api.ld Makefile
+	i386-elf-ld -Map beepdown.map -o beepdown.hrb -T api.ld beepdown.obj apilib.a
+
+color.hrb : apilib.a color.obj api.ld Makefile
+	i386-elf-ld -Map color.map -o color.hrb -T api.ld color.obj apilib.a
+
+color2.hrb : apilib.a color2.obj api.ld Makefile
+	i386-elf-ld -Map color2.map -o color2.hrb -T api.ld color2.obj apilib.a
+
+bootpack.hrb : bootpack.c hankaku.obj graphic.obj dsctbl.obj nasmfunc.obj mysprintf.obj mystrcmp.obj int.obj fifo.obj mouse.obj keyboard.obj memory.obj sheet.obj timer.obj mtask.obj window.obj console.obj file.obj har.ld Makefile
+	i386-elf-gcc -march=i486 -m32 -nostdlib -T har.ld -g nasmfunc.obj mysprintf.obj mystrcmp.obj int.obj fifo.obj graphic.obj dsctbl.obj hankaku.obj mouse.obj keyboard.obj memory.obj sheet.obj timer.obj mtask.obj window.obj console.obj file.obj bootpack.c -o bootpack.hrb
 
 haribote.sys : asmhead.bin bootpack.hrb Makefile
 	cat asmhead.bin bootpack.hrb > haribote.sys
 
-apilib.lib : Makefile $(OBJS_API)
-	$(GOLIB) $(OBJS_API) out:apilib.lib
+haribote.img : ipl10.bin haribote.sys a.hrb hello3.hrb hello4.hrb hello5.hrb winhelo.hrb winhelo2.hrb winhelo3.hrb star1.hrb stars.hrb stars2.hrb lines.hrb walk.hrb noodle.hrb beepdown.hrb color.hrb color2.hrb Makefile
+	mformat -f 1440 -C -B ipl10.bin -i haribote.img ::
+	mcopy -i haribote.img haribote.sys a.hrb hello3.hrb hello4.hrb hello5.hrb winhelo.hrb winhelo2.hrb winhelo3.hrb star1.hrb stars.hrb stars2.hrb lines.hrb walk.hrb noodle.hrb beepdown.hrb color.hrb color2.hrb ::
 
-a.bim : a.obj apilib.lib Makefile
-	$(OBJ2BIM) @$(RULEFILE) out:a.bim map:a.map a.obj apilib.lib
-
-a.hrb : a.bim Makefile
-	$(BIM2HRB) a.bim a.hrb 0
-
-hello3.bim : hello3.obj apilib.lib Makefile
-	$(OBJ2BIM) @$(RULEFILE) out:hello3.bim map:hello3.map hello3.obj apilib.lib
-
-hello3.hrb : hello3.bim Makefile
-	$(BIM2HRB) hello3.bim hello3.hrb 0
-
-hello4.bim : hello4.obj apilib.lib Makefile
-	$(OBJ2BIM) @$(RULEFILE) out:hello4.bim stack:1k map:hello4.map \
-		hello4.obj apilib.lib
-
-hello4.hrb : hello4.bim Makefile
-	$(BIM2HRB) hello4.bim hello4.hrb 0
-
-hello5.bim : hello5.obj Makefile
-	$(OBJ2BIM) @$(RULEFILE) out:hello5.bim stack:1k map:hello5.map hello5.obj
-
-hello5.hrb : hello5.bim Makefile
-	$(BIM2HRB) hello5.bim hello5.hrb 0
-
-winhelo.bim : winhelo.obj apilib.lib Makefile
-	$(OBJ2BIM) @$(RULEFILE) out:winhelo.bim stack:1k map:winhelo.map \
-		winhelo.obj apilib.lib
-
-winhelo.hrb : winhelo.bim Makefile
-	$(BIM2HRB) winhelo.bim winhelo.hrb 0
-
-winhelo2.bim : winhelo2.obj apilib.lib Makefile
-	$(OBJ2BIM) @$(RULEFILE) out:winhelo2.bim stack:1k map:winhelo2.map \
-		winhelo2.obj apilib.lib
-
-winhelo2.hrb : winhelo2.bim Makefile
-	$(BIM2HRB) winhelo2.bim winhelo2.hrb 0
-
-winhelo3.bim : winhelo3.obj apilib.lib Makefile
-	$(OBJ2BIM) @$(RULEFILE) out:winhelo3.bim stack:1k map:winhelo3.map \
-		winhelo3.obj apilib.lib
-
-winhelo3.hrb : winhelo3.bim Makefile
-	$(BIM2HRB) winhelo3.bim winhelo3.hrb 40k
-
-star1.bim : star1.obj apilib.lib Makefile
-	$(OBJ2BIM) @$(RULEFILE) out:star1.bim stack:1k map:star1.map \
-		star1.obj apilib.lib
-
-star1.hrb : star1.bim Makefile
-	$(BIM2HRB) star1.bim star1.hrb 47k
-
-stars.bim : stars.obj apilib.lib Makefile
-	$(OBJ2BIM) @$(RULEFILE) out:stars.bim stack:1k map:stars.map \
-		stars.obj apilib.lib
-
-stars.hrb : stars.bim Makefile
-	$(BIM2HRB) stars.bim stars.hrb 47k
-
-stars2.bim : stars2.obj apilib.lib Makefile
-	$(OBJ2BIM) @$(RULEFILE) out:stars2.bim stack:1k map:stars2.map \
-		stars2.obj apilib.lib
-
-stars2.hrb : stars2.bim Makefile
-	$(BIM2HRB) stars2.bim stars2.hrb 47k
-
-lines.bim : lines.obj apilib.lib Makefile
-	$(OBJ2BIM) @$(RULEFILE) out:lines.bim stack:1k map:lines.map \
-		lines.obj apilib.lib
-
-lines.hrb : lines.bim Makefile
-	$(BIM2HRB) lines.bim lines.hrb 48k
-
-walk.bim : walk.obj apilib.lib Makefile
-	$(OBJ2BIM) @$(RULEFILE) out:walk.bim stack:1k map:walk.map \
-		walk.obj apilib.lib
-
-walk.hrb : walk.bim Makefile
-	$(BIM2HRB) walk.bim walk.hrb 48k
-
-noodle.bim : noodle.obj apilib.lib Makefile
-	$(OBJ2BIM) @$(RULEFILE) out:noodle.bim stack:1k map:noodle.map \
-		noodle.obj apilib.lib
-
-noodle.hrb : noodle.bim Makefile
-	$(BIM2HRB) noodle.bim noodle.hrb 40k
-
-beepdown.bim : beepdown.obj apilib.lib Makefile
-	$(OBJ2BIM) @$(RULEFILE) out:beepdown.bim stack:1k map:beepdown.map \
-		beepdown.obj apilib.lib
-
-beepdown.hrb : beepdown.bim Makefile
-	$(BIM2HRB) beepdown.bim beepdown.hrb 40k
-
-color.bim : color.obj apilib.lib Makefile
-	$(OBJ2BIM) @$(RULEFILE) out:color.bim stack:1k map:color.map \
-		color.obj apilib.lib
-
-color.hrb : color.bim Makefile
-	$(BIM2HRB) color.bim color.hrb 56k
-
-color2.bim : color2.obj apilib.lib Makefile
-	$(OBJ2BIM) @$(RULEFILE) out:color2.bim stack:1k map:color2.map \
-		color2.obj apilib.lib
-
-color2.hrb : color2.bim Makefile
-	$(BIM2HRB) color2.bim color2.hrb 56k
-
-haribote.img : ipl10.bin haribote.sys Makefile \
-		a.hrb hello3.hrb hello4.hrb hello5.hrb winhelo.hrb winhelo2.hrb \
-		winhelo3.hrb star1.hrb stars.hrb stars2.hrb lines.hrb walk.hrb \
-		noodle.hrb beepdown.hrb color.hrb color2.hrb
-	$(EDIMG)   imgin:../../z_tools/fdimg0at.tek \
-		wbinimg src:ipl10.bin len:512 from:0 to:0 \
-		copy from:haribote.sys to:@: \
-		copy from:ipl10.nas to:@: \
-		copy from:make.bat to:@: \
-		copy from:a.hrb to:@: \
-		copy from:hello3.hrb to:@: \
-		copy from:hello4.hrb to:@: \
-		copy from:hello5.hrb to:@: \
-		copy from:winhelo.hrb to:@: \
-		copy from:winhelo2.hrb to:@: \
-		copy from:winhelo3.hrb to:@: \
-		copy from:star1.hrb to:@: \
-		copy from:stars.hrb to:@: \
-		copy from:stars2.hrb to:@: \
-		copy from:lines.hrb to:@: \
-		copy from:walk.hrb to:@: \
-		copy from:noodle.hrb to:@: \
-		copy from:beepdown.hrb to:@: \
-		copy from:color.hrb to:@: \
-		copy from:color2.hrb to:@: \
-		imgout:haribote.img
-
-# àÍî ãKë•
-
-%.gas : %.c bootpack.h apilib.h Makefile
-	$(CC1) -o $*.gas $*.c
-
-%.nas : %.gas Makefile
-	$(GAS2NASK) $*.gas $*.nas
-
-%.obj : %.nas Makefile
-	$(NASK) $*.nas $*.obj $*.lst
-
-# ÉRÉ}ÉìÉh
+# ÔøΩRÔøΩ}ÔøΩÔøΩÔøΩh
 
 img :
 	$(MAKE) haribote.img
@@ -222,13 +117,19 @@ install :
 clean :
 	-$(DEL) *.bin
 	-$(DEL) *.lst
+	-$(DEL) *.gas
 	-$(DEL) *.obj
 	-$(DEL) *.map
-	-$(DEL) *.bim
-	-$(DEL) *.hrb
+	-$(DEL) bootpack.nas
+	-$(DEL) bootpack.map
+	-$(DEL) bootpack.bim
+	-$(DEL) bootpack.hrb
 	-$(DEL) haribote.sys
-	-$(DEL) apilib.lib
+	-$(DEL) convertHankakuTxt
+	-$(DEL) hankaku.c
+	-$(DEL) apilib.a
 
 src_only :
 	$(MAKE) clean
 	-$(DEL) haribote.img
+	-$(DEL) *.hrb

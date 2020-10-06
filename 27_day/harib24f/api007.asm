@@ -1,18 +1,15 @@
-[FORMAT "WCOFF"]
-[INSTRSET "i486p"]
 [BITS 32]
-[FILE "api013.nas"]
 
-		GLOBAL	_api_linewin
+		GLOBAL	api_boxfilwin
 
-[SECTION .text]
+SECTION .text
 
-_api_linewin:		; void api_linewin(int win, int x0, int y0, int x1, int y1, int col);
+api_boxfilwin:	; void api_boxfilwin(int win, int x0, int y0, int x1, int y1, int col);
 		PUSH	EDI
 		PUSH	ESI
 		PUSH	EBP
 		PUSH	EBX
-		MOV		EDX,13
+		MOV		EDX,7
 		MOV		EBX,[ESP+20]	; win
 		MOV		EAX,[ESP+24]	; x0
 		MOV		ECX,[ESP+28]	; y0

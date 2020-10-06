@@ -1,13 +1,10 @@
-[FORMAT "WCOFF"]
-[INSTRSET "i486p"]
 [BITS 32]
-[FILE "api006.nas"]
 
-		GLOBAL	_api_putstrwin
+		GLOBAL	api_putstrwin
 
-[SECTION .text]
+SECTION .text
 
-_api_putstrwin:	; void api_putstrwin(int win, int x, int y, int col, int len, char *str);
+api_putstrwin:	; void api_putstrwin(int win, int x, int y, int col, int len, char *str);
 		PUSH	EDI
 		PUSH	ESI
 		PUSH	EBP

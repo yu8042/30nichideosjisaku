@@ -1,13 +1,10 @@
-[FORMAT "WCOFF"]
-[INSTRSET "i486p"]
 [BITS 32]
-[FILE "api012.nas"]
 
-		GLOBAL	_api_refreshwin
+		GLOBAL	api_refreshwin
 
-[SECTION .text]
+SECTION .text
 
-_api_refreshwin:	; void api_refreshwin(int win, int x0, int y0, int x1, int y1);
+api_refreshwin:	; void api_refreshwin(int win, int x0, int y0, int x1, int y1);
 		PUSH	EDI
 		PUSH	ESI
 		PUSH	EBX

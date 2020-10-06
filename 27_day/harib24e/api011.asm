@@ -1,13 +1,10 @@
-[FORMAT "WCOFF"]
-[INSTRSET "i486p"]
 [BITS 32]
-[FILE "api011.nas"]
 
-		GLOBAL	_api_point
+		GLOBAL	api_point
 
-[SECTION .text]
+SECTION .text
 
-_api_point:		; void api_point(int win, int x, int y, int col);
+api_point:		; void api_point(int win, int x, int y, int col);
 		PUSH	EDI
 		PUSH	ESI
 		PUSH	EBX

@@ -1,13 +1,10 @@
-[FORMAT "WCOFF"]
-[INSTRSET "i486p"]
 [BITS 32]
-[FILE "api005.nas"]
 
-		GLOBAL	_api_openwin
+		GLOBAL	api_openwin
 
-[SECTION .text]
+SECTION .text
 
-_api_openwin:	; int api_openwin(char *buf, int xsiz, int ysiz, int col_inv, char *title);
+api_openwin:	; int api_openwin(char *buf, int xsiz, int ysiz, int col_inv, char *title);
 		PUSH	EDI
 		PUSH	ESI
 		PUSH	EBX

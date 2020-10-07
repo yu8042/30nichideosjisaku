@@ -7,7 +7,7 @@ TOOLPATH = ../../../z_tools/
 INCPATH  = ../../../z_tools/haribote/
 
 MAKE     = make -r
-NASK     = $(TOOLPATH)nask
+NASM     = nasm
 CC1      = $(TOOLPATH)gocc1 -I$(INCPATH) -Os -Wall -quiet
 GAS2NASK = $(TOOLPATH)gas2nask -a
 OBJ2BIM  = $(TOOLPATH)obj2bim
@@ -21,22 +21,22 @@ GOLIB    = $(TOOLPATH)golib00
 COPY     = cp
 DEL      = rm -f
 
-# ƒfƒtƒHƒ‹ƒg“®ì
+# ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå‹•ä½œ
 
 default :
 	$(MAKE) apilib.lib
 
-# ƒtƒ@ƒCƒ‹¶¬‹K‘¥
+# ãƒ•ã‚¡ã‚¤ãƒ«ç”Ÿæˆè¦å‰‡
 
-apilib.lib : Makefile $(OBJS_API)
-	$(GOLIB) $(OBJS_API) out:apilib.lib
+apilib.lib : $(OBJS_API)
+	i386-elf-ar r apilib.lib $(OBJS_API)
 
-# ˆê”Ê‹K‘¥
+# ä¸€èˆ¬è¦å‰‡
 
-%.obj : %.nas Makefile
-	$(NASK) $*.nas $*.obj $*.lst
+%.obj : %.asm Makefile
+	$(NASM) -f elf32 $*.asm -o $@ -l $*.lst
 
-# ƒRƒ}ƒ“ƒh
+# ã‚³ãƒãƒ³ãƒ‰
 
 clean :
 	-$(DEL) *.lst

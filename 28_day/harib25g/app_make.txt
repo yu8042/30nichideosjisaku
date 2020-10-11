@@ -1,10 +1,10 @@
-TOOLPATH = ../../../z_tools/
-INCPATH  = ../../../z_tools/haribote/
+TOOLPATH = ../../z_tools/
+INCPATH  = ../../z_tools/haribote/
 APILIBPATH   = ../apilib/
 HARIBOTEPATH = ../haribote/
 
 MAKE     = make -r
-NASK     = $(TOOLPATH)nask
+NASM     = nasm
 CC1      = $(TOOLPATH)gocc1 -I$(INCPATH) -I../ -Os -Wall -quiet
 GAS2NASK = $(TOOLPATH)gas2nask -a
 OBJ2BIM  = $(TOOLPATH)obj2bim
@@ -18,41 +18,30 @@ GOLIB    = $(TOOLPATH)golib00
 COPY     = cp
 DEL      = rm -f
 
-# ÉfÉtÉHÉãÉgìÆçÏ
+# „Éá„Éï„Ç©„É´„ÉàÂãï‰Ωú
 
 default :
 	$(MAKE) $(APP).hrb
 
-# ÉtÉ@ÉCÉãê∂ê¨ãKë•
+# „Éï„Ç°„Ç§„É´ÁîüÊàêË¶èÂâá
 
-$(APP).bim : $(APP).obj $(APILIBPATH)apilib.lib Makefile ../app_make.txt
-	$(OBJ2BIM) @$(RULEFILE) out:$(APP).bim map:$(APP).map stack:$(STACK) \
-		$(APP).obj $(APILIBPATH)apilib.lib
+$(APP).hrb : $(APP).obj $(APILIBPATH)apilib.lib ../api.ld Makefile
+	i386-elf-ld -o $(APP).hrb -T ../api.ld ../haribote/mysprintf.obj $(APP).obj $(APILIBPATH)apilib.lib
 
-$(APP).hrb : $(APP).bim Makefile ../app_make.txt
-	$(BIM2HRB) $(APP).bim $(APP).hrb $(MALLOC)
-
-haribote.img : ../haribote/ipl20.bin ../haribote/haribote.sys $(APP).hrb \
+haribote.img : ../haribote/ipl20.bin ../haribote/haribote.sys $(APP).hrb ../nihongo/nihongo.fnt \
 		Makefile ../app_make.txt
-	$(EDIMG)   imgin:../../../z_tools/fdimg0at.tek \
-		wbinimg src:../haribote/ipl20.bin len:512 from:0 to:0 \
-		copy from:../haribote/haribote.sys to:@: \
-		copy from:$(APP).hrb to:@: \
-		copy from:../nihongo/nihongo.fnt to:@: \
-		imgout:haribote.img
+	mformat -f 1440 -C -B ../haribote/ipl20.bin -i haribote.img ::
+	mcopy -i haribote.img ../haribote/haribote.sys $(APP).hrb ../nihongo/nihongo.fnt ::
 
-# àÍî ãKë•
+# ‰∏ÄËà¨Ë¶èÂâá
 
-%.gas : %.c ../apilib.h Makefile ../app_make.txt
-	$(CC1) -o $*.gas $*.c
+%.obj : %.asm Makefile ../app_make.txt
+	$(NASM) -f elf32 $*.asm -o $@
 
-%.nas : %.gas Makefile ../app_make.txt
-	$(GAS2NASK) $*.gas $*.nas
+%.obj : %.c ../apilib.h Makefile ../app_make.txt
+	i386-elf-gcc -c -march=i486 -m32 -I../ -nostdlib $*.c -o $@
 
-%.obj : %.nas Makefile ../app_make.txt
-	$(NASK) $*.nas $*.obj $*.lst
-
-# ÉRÉ}ÉìÉh
+# „Ç≥„Éû„É≥„Éâ
 
 run :
 	$(MAKE) haribote.img

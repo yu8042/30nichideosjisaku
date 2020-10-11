@@ -4,7 +4,7 @@ void HariMain(void)
 {
 	int fh;
 	char c;
-	fh = api_fopen("ipl10.nas");
+	fh = api_fopen("ipl20.asm");
 	if (fh != 0) {
 		for (;;) {
 			if (api_fread(&c, 1, fh) == 0) {

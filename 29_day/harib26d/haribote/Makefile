@@ -1,12 +1,12 @@
-OBJS_BOOTPACK = bootpack.obj naskfunc.obj hankaku.obj graphic.obj dsctbl.obj \
+OBJS_BOOTPACK = bootpack.obj nasmfunc.obj hankaku.obj graphic.obj dsctbl.obj \
 		int.obj fifo.obj keyboard.obj mouse.obj memory.obj sheet.obj timer.obj \
-		mtask.obj window.obj console.obj file.obj tek.obj
+		mtask.obj window.obj console.obj file.obj mysprintf.obj mystrcmp.obj
 
 TOOLPATH = ../../../z_tools/
 INCPATH  = ../../../z_tools/haribote/
 
 MAKE     = make -r
-NASK     = $(TOOLPATH)nask
+NASM     = nasm
 CC1      = $(TOOLPATH)gocc1 -I$(INCPATH) -Os -Wall -quiet
 GAS2NASK = $(TOOLPATH)gas2nask -a
 OBJ2BIM  = $(TOOLPATH)obj2bim
@@ -20,49 +20,41 @@ GOLIB    = $(TOOLPATH)golib00
 COPY     = cp
 DEL      = rm -f
 
-# ƒfƒtƒHƒ‹ƒg“®ì
+# ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå‹•ä½œ
 
 default :
 	$(MAKE) ipl20.bin
 	$(MAKE) haribote.sys
 
-# ƒtƒ@ƒCƒ‹¶¬‹K‘¥
+# ãƒ•ã‚¡ã‚¤ãƒ«ç”Ÿæˆè¦å‰‡
 
-ipl20.bin : ipl20.nas Makefile
-	$(NASK) ipl20.nas ipl20.bin ipl20.lst
+ipl20.bin : ipl20.asm Makefile
+	$(NASM) ipl20.asm -o ipl20.bin -l ipl20.lst
 
-asmhead.bin : asmhead.nas Makefile
-	$(NASK) asmhead.nas asmhead.bin asmhead.lst
+asmhead.bin : asmhead.asm Makefile
+	$(NASM) asmhead.asm -o asmhead.bin -l asmhead.lst
 
-hankaku.bin : hankaku.txt Makefile
-	$(MAKEFONT) hankaku.txt hankaku.bin
+convertHankakuTxt : convertHankakuTxt.c
+	gcc $< -o $@
 
-hankaku.obj : hankaku.bin Makefile
-	$(BIN2OBJ) hankaku.bin hankaku.obj _hankaku
+hankaku.c : hankaku.txt convertHankakuTxt
+	./convertHankakuTxt
 
-bootpack.bim : $(OBJS_BOOTPACK) Makefile
-	$(OBJ2BIM) @$(RULEFILE) out:bootpack.bim stack:3136k map:bootpack.map \
-		$(OBJS_BOOTPACK)
-# 3MB+64KB=3136KB
-
-bootpack.hrb : bootpack.bim Makefile
-	$(BIM2HRB) bootpack.bim bootpack.hrb 0
+bootpack.hrb : $(OBJS_BOOTPACK) har.ld Makefile
+	i386-elf-gcc -march=i486 -m32 -nostdlib -T har.ld -g $(OBJS_BOOTPACK) -o bootpack.hrb
 
 haribote.sys : asmhead.bin bootpack.hrb Makefile
 	cat asmhead.bin bootpack.hrb > haribote.sys
 
-# ˆê”Ê‹K‘¥
+# ä¸€èˆ¬è¦å‰‡
 
-%.gas : %.c bootpack.h Makefile
-	$(CC1) -o $*.gas $*.c
+%.obj : %.asm Makefile ../app_make.txt
+	$(NASM) -f elf32 $*.asm -o $@
 
-%.nas : %.gas Makefile
-	$(GAS2NASK) $*.gas $*.nas
+%.obj : %.c ../apilib.h Makefile ../app_make.txt
+	i386-elf-gcc -c -march=i486 -m32 -I../ -nostdlib $*.c -o $@
 
-%.obj : %.nas Makefile
-	$(NASK) $*.nas $*.obj $*.lst
-
-# ƒRƒ}ƒ“ƒh
+# ï¿½Rï¿½}ï¿½ï¿½ï¿½h
 
 clean :
 	-$(DEL) asmhead.bin
@@ -72,6 +64,8 @@ clean :
 	-$(DEL) *.map
 	-$(DEL) *.bim
 	-$(DEL) *.hrb
+	-$(DEL) hankaku.c
+	-$(DEL) convertHankakuTxt
 
 src_only :
 	$(MAKE) clean

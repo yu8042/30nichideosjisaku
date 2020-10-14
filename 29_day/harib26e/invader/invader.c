@@ -1,9 +1,19 @@
-#include <stdio.h>		/* sprintf */
-#include <string.h>		/* strlen */
+//#include <stdio.h>		/* sprintf */
+//#include <string.h>		/* strlen */
 #include "apilib.h"
 
 void putstr(int win, char *winbuf, int x, int y, int col, unsigned char *s);
 void wait(int i, int timer, char *keyflag);
+
+/* mysprintf.c */
+void sprintf (char *str, char *fmt, ...);
+
+/* mystrcmp.c */
+int strcmp(char *str1, char *str2);
+int strncmp(char *str1, char *str2, int n);
+
+/* mystrlen.c */
+int strlen(const char* str);
 
 static unsigned char charset[16 * 8] = {
 
@@ -81,7 +91,7 @@ next_group:
 	keyflag[1] = 0;
 	keyflag[2] = 0;
 
-	ly = 0; /* ”ñ•\Ž¦ */
+	ly = 0; /* ï¿½ï¿½\ï¿½ï¿½ */
 	laserwait = 0;
 	movewait = movewait0;
 	idir = +1;
@@ -95,7 +105,7 @@ next_group:
 
 		wait(4, timer, keyflag);
 
-		/* Ž©‹@‚Ìˆ— */
+		/* ï¿½ï¿½ï¿½@ï¿½Ìï¿½ï¿½ï¿½ */
 		if (keyflag[0 /* left */]  != 0 && fx > 0) {
 			fx--;
 			putstr(win, winbuf, fx, 13, 6, "efg ");
@@ -112,7 +122,7 @@ next_group:
 			ly = 13;
 		}
 
-		/* ƒCƒ“ƒx[ƒ_ˆÚ“® */
+		/* ï¿½Cï¿½ï¿½ï¿½xï¿½[ï¿½_ï¿½Ú“ï¿½ */
 		if (movewait != 0) {
 			movewait--;
 		} else {
@@ -132,7 +142,7 @@ next_group:
 			}
 		}
 
-		/* ƒŒ[ƒU[ˆ— */
+		/* ï¿½ï¿½ï¿½[ï¿½Uï¿½[ï¿½ï¿½ï¿½ï¿½ */
 		if (ly > 0) {
 			if (ly < 13) {
 				if (ix < lx && lx < ix + 25 && iy <= ly && ly < iy + invline) {
@@ -156,7 +166,7 @@ next_group:
 					/* hit ! */
 					score += point;
 					point++;
-					sprintf(s, "%08d", score);
+					sprintf(s, "%d", score);
 					putstr(win, winbuf, 10, 0, 7, s);
 					if (high < score) {
 						high = score;
@@ -174,7 +184,7 @@ next_group:
 							}
 						}
 					}
-					/* ‘S•”‚â‚Á‚Â‚¯‚ç‚ê‚½ */
+					/* ï¿½Sï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â‚ï¿½ï¿½ï¿½ê‚½ */
 					movewait0 -= movewait0 / 3;
 					goto next_group;
 	alive:
@@ -200,7 +210,7 @@ void putstr(int win, char *winbuf, int x, int y, int col, unsigned char *s)
 	x = x * 8 + 8;
 	y = y * 16 + 29;
 	x0 = x;
-	i = strlen(s);	/* s‚Ì•¶Žš”‚ð”‚¦‚é */
+	i = strlen(s);	/* sï¿½Ì•ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ð”‚ï¿½ï¿½ï¿½ */
 	api_boxfilwin(win + 1, x, y, x + i * 8 - 1, y + 15, 0);
 	q = winbuf + y * 336;
 	t[1] = 0;
@@ -241,7 +251,7 @@ void wait(int i, int timer, char *keyflag)
 {
 	int j;
 	if (i > 0) {
-		/* ˆê’èŽžŠÔ‘Ò‚Â */
+		/* ï¿½ï¿½èŽžï¿½Ô‘Ò‚ï¿½ */
 		api_settimer(timer, i);
 		i = 128;
 	} else {

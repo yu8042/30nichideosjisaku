@@ -1,16 +1,16 @@
-/* asmhead.nas */
+/* asmhead.asm */
 struct BOOTINFO { /* 0x0ff0-0x0fff */
-	char cyls; /* ƒu[ƒgƒZƒNƒ^‚Í‚Ç‚±‚Ü‚ÅƒfƒBƒXƒN‚ğ“Ç‚ñ‚¾‚Ì‚© */
-	char leds; /* ƒu[ƒg‚ÌƒL[ƒ{[ƒh‚ÌLED‚Ìó‘Ô */
-	char vmode; /* ƒrƒfƒIƒ‚[ƒh  ‰½ƒrƒbƒgƒJƒ‰[‚© */
+	char cyls; /* ãƒ–ãƒ¼ãƒˆã‚»ã‚¯ã‚¿ã¯ã©ã“ã¾ã§ãƒ‡ã‚£ã‚¹ã‚¯ã‚’èª­ã‚“ã ã®ã‹ */
+	char leds; /* ãƒ–ãƒ¼ãƒˆæ™‚ã®ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®LEDã®çŠ¶æ…‹ */
+	char vmode; /* ãƒ“ãƒ‡ã‚ªãƒ¢ãƒ¼ãƒ‰  ä½•ãƒ“ãƒƒãƒˆã‚«ãƒ©ãƒ¼ã‹ */
 	char reserve;
-	short scrnx, scrny; /* ‰æ–Ê‰ğ‘œ“x */
+	short scrnx, scrny; /* ç”»é¢è§£åƒåº¦ */
 	char *vram;
 };
 #define ADR_BOOTINFO	0x00000ff0
 #define ADR_DISKIMG		0x00100000
 
-/* naskfunc.nas */
+/* nasmfunc.asm */
 void io_hlt(void);
 void io_cli(void);
 void io_sti(void);
@@ -132,12 +132,12 @@ void enable_mouse(struct FIFO32 *fifo, int data0, struct MOUSE_DEC *mdec);
 int mouse_decode(struct MOUSE_DEC *mdec, unsigned char dat);
 
 /* memory.c */
-#define MEMMAN_FREES		4090	/* ‚±‚ê‚Å–ñ32KB */
+#define MEMMAN_FREES		4090	/* â€Ã…Ã¬â€Ã‡Ã¥â€Ã…ÃŸÃÂ¥Ã‘32KB */
 #define MEMMAN_ADDR			0x003c0000
-struct FREEINFO {	/* ‚ ‚«î•ñ */
+struct FREEINFO {	/* â€Ã…Ã‡â€Ã…Ã§ÃŠÃ‰Ã–Ã‚â€ Â± */
 	unsigned int addr, size;
 };
-struct MEMMAN {		/* ƒƒ‚ƒŠŠÇ— */
+struct MEMMAN {		/* â€Ã‰Â°â€Ã‰Â¢â€Ã‰â„¢ÃÃ†Â°ÃÃªÃœ */
 	int frees, maxfrees, lostsize, losts;
 	struct FREEINFO free[MEMMAN_FREES];
 };
@@ -196,8 +196,8 @@ int timer_cancel(struct TIMER *timer);
 void timer_cancelall(struct FIFO32 *fifo);
 
 /* mtask.c */
-#define MAX_TASKS		1000	/* Å‘åƒ^ƒXƒN” */
-#define TASK_GDT0		3		/* TSS‚ğGDT‚Ì‰½”Ô‚©‚çŠ„‚è“–‚Ä‚é‚Ì‚© */
+#define MAX_TASKS	1000	/* æœ€å¤§ã‚¿ã‚¹ã‚¯æ•° */
+#define TASK_GDT0	3	/* TSSã‚’GDTã®ä½•ç•ªç›®ã‹ã‚‰å‰²ã‚Šå½“ã¦ã‚‹ã®ã‹ */
 #define MAX_TASKS_LV	100
 #define MAX_TASKLEVELS	10
 struct TSS32 {
@@ -207,7 +207,7 @@ struct TSS32 {
 	int ldtr, iomap;
 };
 struct TASK {
-	int sel, flags; /* sel‚ÍGDT‚Ì”Ô†‚Ì‚±‚Æ */
+	int sel, flags; /* selã¯selectorã®ç•¥ã§GDTã®ç•ªå·ã®ã“ã¨ */
 	int level, priority;
 	struct FIFO32 fifo;
 	struct TSS32 tss;
@@ -220,13 +220,13 @@ struct TASK {
 	unsigned char langmode, langbyte1;
 };
 struct TASKLEVEL {
-	int running; /* “®ì‚µ‚Ä‚¢‚éƒ^ƒXƒN‚Ì” */
-	int now; /* Œ»İ“®ì‚µ‚Ä‚¢‚éƒ^ƒXƒN‚ª‚Ç‚ê‚¾‚©•ª‚©‚é‚æ‚¤‚É‚·‚é‚½‚ß‚Ì•Ï” */
+	int running; /* å‹•ä½œã—ã¦ã„ã‚‹ã‚¿ã‚¹ã‚¯ã®æ•° */
+	int now; /* ç¾åœ¨å‹•ä½œã—ã¦ã„ã‚‹ã‚¿ã‚¹ã‚¯ãŒã©ã‚Œã ã‹åˆ†ã‹ã‚‹ã‚ˆã†ã«ã™ã‚‹ãŸã‚ã®å¤‰æ•° */
 	struct TASK *tasks[MAX_TASKS_LV];
 };
 struct TASKCTL {
-	int now_lv; /* Œ»İ“®ì’†‚ÌƒŒƒxƒ‹ */
-	char lv_change; /* Ÿ‰ñƒ^ƒXƒNƒXƒCƒbƒ`‚Ì‚Æ‚«‚ÉAƒŒƒxƒ‹‚à•Ï‚¦‚½‚Ù‚¤‚ª‚¢‚¢‚©‚Ç‚¤‚© */
+	int now_lv; /* ç¾åœ¨å‹•ä½œä¸­ã®ãƒ¬ãƒ™ãƒ« */
+	char lv_change; /* æ¬¡å›ã‚¿ã‚¹ã‚¯ã‚¹ã‚¤ãƒƒãƒã®ã¨ãã«ã€ãƒ¬ãƒ™ãƒ«ã‚‚å¤‰ãˆãŸã»ã†ãŒã„ã„ã‹ã©ã†ã‹ */
 	struct TASKLEVEL level[MAX_TASKLEVELS];
 	struct TASK tasks0[MAX_TASKS];
 };
@@ -286,12 +286,17 @@ struct FILEINFO {
 void file_readfat(int *fat, unsigned char *img);
 void file_loadfile(int clustno, int size, char *buf, int *fat, char *img);
 struct FILEINFO *file_search(char *name, struct FILEINFO *finfo, int max);
-char *file_loadfile2(int clustno, int *psize, int *fat);
-
-/* tek.c */
-int tek_getsize(unsigned char *p);
-int tek_decomp(unsigned char *p, char *q, int size);
 
 /* bootpack.c */
 struct TASK *open_constask(struct SHEET *sht, unsigned int memtotal);
 struct SHEET *open_console(struct SHTCTL *shtctl, unsigned int memtotal);
+
+/* mysprintf.c */
+void sprintf (char *str, char *fmt, ...);
+
+/* mystrcmp.c */
+int strcmp(char *str1, char *str2);
+int strncmp(char *str1, char *str2, int n);
+
+/* mystrlen.c */
+int strlen(const char* str);
